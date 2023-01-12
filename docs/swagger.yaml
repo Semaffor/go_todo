@@ -1,0 +1,51 @@
+basePath: /
+definitions:
+  todo_demo.User:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - name
+    - password
+    - username
+    type: object
+host: localhost:8000
+info:
+  contact:
+    name: API
+  description: Simple example of REST API implementation
+  title: App API
+  version: "1.0"
+paths:
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Create new user account
+      parameters:
+      - description: user info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/todo_demo.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+      summary: SignUp
+      tags:
+      - auth
+securityDefinitions:
+  JWT-auth:
+    type: basic
+swagger: "2.0"

@@ -11,7 +11,16 @@ type AuthData struct {
 	Password string `json:"password" binding:"required"`
 }
 
-// handler - is a function which should receive pointer on gin Context
+// @Summary LogIn
+// @Tags auth
+// @Description Authorization in system
+// @Accept  json
+// @Produce  json
+// @Param input body username,password true "user info"
+// @Success 200 {string} string "token"
+// @Router /auth/log-in [post]
+
+/* handler - is a function which should receive pointer on gin Context*/
 func (h *Handler) logIn(c *gin.Context) {
 	var loginData AuthData
 
@@ -27,6 +36,14 @@ func (h *Handler) logIn(c *gin.Context) {
 	c.JSON(http.StatusCreated, map[string]interface{}{"access-token": token})
 }
 
+// @Summary SignUp
+// @Tags auth
+// @Description Create new user account
+// @Accept  json
+// @Produce  json
+// @Param input body todo_demo.User true "user info"
+// @Success 200 {integer} integer 1
+// @Router /auth/sign-up [post]
 func (h *Handler) signUp(c *gin.Context) {
 	var user todo_demo.User
 

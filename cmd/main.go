@@ -15,6 +15,17 @@ import (
 	"syscall"
 )
 
+// @title App API
+// @version 1.0
+// @description Simple example of REST API implementation
+
+// @contact.name   API
+
+// @host localhost:8000
+// @BasePath /
+
+// @securityDefinitions.basic  JWT-auth
+
 func main() {
 	log.Println("App starting...")
 	if err := initConfig(); err != nil {

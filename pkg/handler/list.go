@@ -8,6 +8,17 @@ import (
 	"strconv"
 )
 
+// @Summary Create list
+// @Security JWT-token
+// @Tags lists
+// @Description create new empty list
+// @Accept  json
+// @Produce  json
+// @Param input body todo.TodoList true "list info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Router /api/lists [post]
+
 func (h *Handler) createList(c *gin.Context) {
 	userId, err := getUserIdFromCtx(c)
 	if err != nil {
