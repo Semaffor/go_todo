@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -31,6 +32,16 @@ func (h *Handler) identifyUser(c *gin.Context) {
 		return
 	}
 
-	//Set id in
+	//Set id in context
 	c.Set(userCtx, userId)
+}
+
+func getUserIdFromCtx(c *gin.Context) (int, error) {
+	idStr, _ := c.Get(userCtx)
+	id, ok := idStr.(int)
+	if !ok {
+		newErrorResponse(c, http.StatusInternalServerError, "Invalid type: userId")
+		return 0, errors.New("field userId hasn't found")
+	}
+	return id, nil
 }
