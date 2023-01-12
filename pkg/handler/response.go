@@ -10,7 +10,7 @@ type Error struct {
 }
 
 func newErrorResponse(c *gin.Context, code int, message string) {
-	defer log.Fatalf("Error: %s", message)
+	defer log.Printf("Error: %s\n", message)
 
 	// stop event propagation (other handling) and send error message
 	c.AbortWithStatusJSON(code, Error{message})
