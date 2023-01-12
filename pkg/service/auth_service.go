@@ -2,6 +2,7 @@ package service
 
 import (
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	todo_demo "github.com/semaffor/go-todo-app"
@@ -9,6 +10,10 @@ import (
 	"github.com/semaffor/go-todo-app/pkg/util"
 	"os"
 	"time"
+)
+
+var (
+	signKey = os.Getenv("SIGN_KEY")
 )
 
 type tokenClaims struct {
@@ -38,6 +43,28 @@ func (a *AuthService) GenerateToken(login, password string) (string, error) {
 	return generateJwtAccessToken(user)
 }
 
+func (a *AuthService) ParseJwt(inputToken string) (int, error) {
+	token, err := jwt.ParseWithClaims(inputToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		//Check on sign presence, except method HMAC
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+		// key-sign
+		return []byte(signKey), nil
+	})
+
+	if err != nil {
+		return 0, err
+	}
+
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return 0, errors.New("token claims aren't of user type *tokenClaims")
+	}
+
+	return claims.UserId, nil
+}
+
 func encryptPassword(username, pass string) string {
 	hash := sha256.New()
 	hash.Write([]byte(pass))
@@ -56,6 +83,5 @@ func generateJwtAccessToken(user todo_demo.User) (string, error) {
 		UserId:   user.Id,
 		Username: user.Username,
 	})
-	signKey := os.Getenv("SIGN_KEY")
 	return token.SignedString([]byte(signKey))
 }

@@ -25,7 +25,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	}
 
 	// routes (@RequestMapping("/api"))
-	api := router.Group("/api")
+	api := router.Group("/api", h.identifyUser)
 	{
 		// routes for todo list
 		lists := api.Group("/lists")
