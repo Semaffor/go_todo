@@ -24,18 +24,14 @@ type Config struct {
 
 /*
 	.Open() - need additional check err on .Ping() manually,
-	.Connect() check ping automatically // panic?
+	.Connect() check ping automatically
 */
 
 func NewPostgresDb(cfg Config) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres",
+	db, err := sqlx.Connect("postgres",
 		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 			cfg.Host, cfg.Port, cfg.Username, cfg.DbName, cfg.Password, cfg.SslMode))
 
-	if err != nil {
-		return nil, err
-	}
-	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}
