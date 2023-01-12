@@ -14,7 +14,7 @@ import (
 
 func main() {
 	if err := initConfig(); err != nil {
-		log.Fatalf("Error occurred")
+		log.Fatalf("Error occurred: init config: %s", err.Error())
 	}
 
 	if err := godotenv.Load(); err != nil {

@@ -1,8 +1,12 @@
 package service
 
-import "github.com/semaffor/go-todo-app/pkg/repostiroty"
+import (
+	todo_demo "github.com/semaffor/go-todo-app"
+	"github.com/semaffor/go-todo-app/pkg/repostiroty"
+)
 
 type Authorization interface {
+	CreateUser(user todo_demo.User) (int, error)
 }
 
 type TodoList interface {
@@ -18,5 +22,7 @@ type Service struct {
 }
 
 func NewService(repo *repostiroty.Repository) *Service {
-	return &Service{}
+	return &Service{
+		Authorization: NewAuthService(repo.Authorization),
+	}
 }
