@@ -22,6 +22,6 @@ func (server *Server) Run(port string, handler http.Handler) error {
 	return server.httpServer.ListenAndServe()
 }
 
-func (server *Server) shutdown(ctx context.Context) error {
+func (server *Server) Shutdown(ctx context.Context) error {
 	return server.httpServer.Shutdown(ctx)
 }

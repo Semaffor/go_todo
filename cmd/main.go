@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/semaffor/go-todo-app"
@@ -10,9 +11,12 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
+	log.Println("App starting...")
 	if err := initConfig(); err != nil {
 		log.Fatalf("Error occurred: init config: %s", err.Error())
 	}
@@ -39,8 +43,25 @@ func main() {
 	ginHandlers := handler.NewHandler(services)
 
 	srv := new(todo_demo.Server)
-	if err := srv.Run(viper.GetString("port"), ginHandlers.InitRoutes()); err != nil {
-		log.Fatalf("Error when running: %s", err.Error())
+
+	go func() {
+		if err := srv.Run(viper.GetString("port"), ginHandlers.InitRoutes()); err != nil {
+			log.Fatalf("Error when running: %s", err.Error())
+		}
+	}()
+
+	controlChan := make(chan os.Signal, 1)
+	signal.Notify(controlChan, syscall.SIGTERM, syscall.SIGINT)
+	<-controlChan
+
+	log.Println("App closing...")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		log.Printf("error occured on server shutting down: %s\n", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		log.Printf("error occured on db connection close: %s\n", err.Error())
 	}
 }
 
